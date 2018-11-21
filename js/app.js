@@ -11,6 +11,11 @@ const onPageLoad = () => {
 	// Hide it by default
 	$jobRoleInput.addClass("is-hidden");
 
+	// Hide color select if no design has been selected
+	if ($("select#design").prop("value") === "Select Theme") {
+		$("select#color").addClass("is-hidden");
+	}
+
 	// Set focus on username field
 	$("input#name").trigger("focus");
 
