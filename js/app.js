@@ -5,8 +5,11 @@
 
 // Function to run when page finishes loading
 const onPageLoad = () => {
-	// Hide job role input field
-	$("input#other-title").hide();
+	// Get job role input field
+	const $jobRoleInput = $("input#other-title");
+
+	// Hide it by default
+	$jobRoleInput.addClass("is-hidden");
 
 	// Set focus on username field
 	$("input#name").trigger("focus");
@@ -16,10 +19,10 @@ const onPageLoad = () => {
 		// If the new value is other,
 		if (event.target.value === "other") {
 			// Show the job role field
-			$("input#other-title").fadeIn();
+			$jobRoleInput.removeClass("is-hidden");
 		} else { // Otherwise,
 			// Hide it
-			$("input#other-title").fadeOut();
+			$jobRoleInput.addClass("is-hidden");
 		}
 	});
 }
