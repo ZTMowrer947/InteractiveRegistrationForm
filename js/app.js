@@ -49,6 +49,9 @@ const onPageLoad = () => {
 			$jobRoleInput.addClass("is-hidden");
 		}
 	});
+
+	// Check to see if the color choices should be hidden after design choice changes
+	$("select#design").change(hideColorSelectIfNoDesignSelected);
 }
 
 // Run onPageLoad function when page finishes loading
