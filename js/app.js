@@ -35,6 +35,36 @@ const onPageLoad = () => {
 	// Hide color select if no design selected
 	hideColorSelectIfNoDesignSelected();
 
+	// Get color choices
+	const $colorSelect = $("select#color");
+
+	// Consider design choice
+	switch ($("select#design").val()) {
+		// If JS Puns design  was selected,
+		case "js puns":
+			// Get I <3 JS colors
+			$colorSelect.children(":not(:contains('Puns'))")
+				// Hide them
+				.addClass("is-hidden")
+				// Get JS Puns colors
+				.siblings(":contains('Puns')")
+				// Show them
+				.removeClass("is-hidden");
+			break;
+
+		// If I <3 JS design was selected
+		case "heart js":
+			// Get JS Puns colors
+			$colorSelect.children(":contains('Puns')")
+				// Hide them
+				.addClass("is-hidden")
+				// Get I <3 JS colors
+				.siblings(":not(:contains('Puns'))")
+				// Show them
+				.removeClass("is-hidden");
+			break;
+	}
+
 	// Set focus on username field
 	$("input#name").trigger("focus");
 
