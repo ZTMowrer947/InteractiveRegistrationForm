@@ -50,8 +50,49 @@ const onPageLoad = () => {
 		}
 	});
 
-	// Check to see if the color choices should be hidden after design choice changes
-	$("select#design").change(hideColorSelectIfNoDesignSelected);
+	// When a t-shirt theme is selected,
+	$("select#design").change(event => {
+		// Hide color choices if no t-shirt theme has been selected
+		hideColorSelectIfNoDesignSelected();
+
+		// Get color choices
+		const $colorSelect = $("select#color");
+
+		// Consider design choice
+		switch (event.target.value) {
+			// If JS Puns design  was selected,
+			case "js puns":
+				// Get I <3 JS colors
+				$colorSelect.children(":not(:contains('Puns'))")
+					// Hide them
+					.addClass("is-hidden")
+					// Get JS Puns colors
+					.siblings(":contains('Puns')")
+					// Show them
+					.removeClass("is-hidden")
+					// Get the first JS Puns color
+					.first()
+					// Select it
+					.prop("selected", "selected");
+				break;
+
+			// If I <3 JS design was selected
+			case "heart js":
+				// Get JS Puns colors
+				$colorSelect.children(":contains('Puns')")
+					// Hide them
+					.addClass("is-hidden")
+					// Get I <3 JS colors
+					.siblings(":not(:contains('Puns'))")
+					// Show them
+					.removeClass("is-hidden")
+					// Get the first I <3 JS color
+					.first()
+					// Select it
+					.prop("selected", "selected");
+				break;
+		}
+	});
 }
 
 // Run onPageLoad function when page finishes loading
