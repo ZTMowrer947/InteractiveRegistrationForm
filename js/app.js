@@ -14,6 +14,11 @@ const onPageLoad = () => {
 	// Hide color select if no design has been selected
 	if ($("select#design").prop("value") === "Select Theme") {
 		$("select#color").addClass("is-hidden");
+
+		$("<p></p>")
+			.text("Please select a t-shirt theme.")
+			.attr("id", "no-design-sel")
+			.insertAfter($("select#color"));
 	}
 
 	// Set focus on username field

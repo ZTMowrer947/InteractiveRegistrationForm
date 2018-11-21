@@ -135,6 +135,10 @@ button:hover {
 	margin-top: 1.25em;
 }
 
+p#no-design-sel {
+	margin-top: 0.625rem;
+}
+
 /* ================================= 
   Helper Classes
 ==================================== */
