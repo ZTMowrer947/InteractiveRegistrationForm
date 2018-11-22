@@ -26,6 +26,15 @@ const hideColorSelectIfNoDesignSelected = () => {
 
 // Function to run when page finishes loading
 const onPageLoad = () => {
+	// Set initial total event cost to 0
+	let totalEventCost = 0;
+
+	$("<p></p>")
+		.text(`Total: $${totalEventCost}`)
+		.attr("id", "activity-total")
+		.addClass("is-hidden")
+		.appendTo($(".activities"));
+
 	// Get job role input field
 	const $jobRoleInput = $("input#other-title");
 
@@ -121,6 +130,34 @@ const onPageLoad = () => {
 					// Select it
 					.prop("selected", "selected");
 				break;
+		}
+	});
+
+	$(".activities input[type='checkbox']").change(event => {
+		let eventValue = 0;
+
+		switch (event.target.name) {
+			case "all":
+				eventValue = 200;
+				break;
+
+			default:
+				eventValue = 100;
+				break;
+		}
+
+		if (event.target.checked) {
+			totalEventCost += eventValue;
+		} else {
+			totalEventCost -= eventValue;
+		}
+
+		if (totalEventCost > 0) {
+			$("#activity-total").removeClass("is-hidden")
+				.text(`Total: $${totalEventCost}`);
+		} else {
+			$("#activity-total").addClass("is-hidden")
+				.text("Total: $0");
 		}
 	});
 }
