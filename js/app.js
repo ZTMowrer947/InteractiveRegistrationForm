@@ -24,16 +24,44 @@ const hideColorSelectIfNoDesignSelected = () => {
 	}
 };
 
+// Calculate cost of all checked activities
+const getActivityCostSum = activities => {
+	// From the given array of activity checkboxes, get only the ones that have been checked
+	const checkedActivities = activities.filter(activity => activity.checked);
+
+	// From the checked checkboxes, map the cost of each activity
+	const activityCosts = checkedActivities.map(activity => 
+		activity.name === "all" ? // If the activity is the main conference,
+			200 :				  // The cost is $200
+			100);				  // Otherwise, it is $100
+
+	// Add all of the activity costs together
+	return activityCosts
+		// Perform a given function for each element, passing the result as the first parameter for the next element
+		.reduce(
+			// Adds the current value to the running total
+			(total, current) => total + current,
+		0); // Initial value if there are no checked checkboxes
+}
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
-	// Set initial total event cost to 0
-	let totalEventCost = 0;
+	const $activityCheckboxes = $(".activities input[type='checkbox']");
 
-	$("<p></p>")
-		.text(`Total: $${totalEventCost}`)
+	// Set initial total event cost to sum of checked checkboxes
+	let totalActivityCost = getActivityCostSum(
+		$activityCheckboxes.get());
+
+	// Create paragraph element to store running total
+	const $activityTotal = $("<p></p>")
+		.text(`Total: $${totalActivityCost}`)
 		.attr("id", "activity-total")
-		.addClass("is-hidden")
 		.appendTo($(".activities"));
+
+	// Hide it if all activities are unchecked
+	if (totalActivityCost === 0) {
+		$activityTotal.addClass("is-hidden");
+	}
 
 	// Get job role input field
 	const $jobRoleInput = $("input#other-title");
@@ -133,29 +161,18 @@ const onPageLoad = () => {
 		}
 	});
 
-	$(".activities input[type='checkbox']").change(event => {
-		let eventValue = 0;
+	// When a activity checkbox is checked/unchecked,
+	$activityCheckboxes.change(() => {
+		// Recalculate total cost
+		totalActivityCost = getActivityCostSum($activityCheckboxes.get())
 
-		switch (event.target.name) {
-			case "all":
-				eventValue = 200;
-				break;
-
-			default:
-				eventValue = 100;
-				break;
-		}
-
-		if (event.target.checked) {
-			totalEventCost += eventValue;
-		} else {
-			totalEventCost -= eventValue;
-		}
-
-		if (totalEventCost > 0) {
+		// If total cost is greater than 0 (at least one checkbox is checked)
+		if (totalActivityCost > 0) {
+			// Show running total with total cost
 			$("#activity-total").removeClass("is-hidden")
-				.text(`Total: $${totalEventCost}`);
+				.text(`Total: $${totalActivityCost}`);
 		} else {
+			// Hide running total
 			$("#activity-total").addClass("is-hidden")
 				.text("Total: $0");
 		}
