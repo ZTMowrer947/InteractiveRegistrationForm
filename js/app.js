@@ -164,7 +164,7 @@ const onPageLoad = () => {
 	});
 
 	// When a activity checkbox is checked/unchecked,
-	$activityCheckboxes.change(() => {
+	$activityCheckboxes.change(event => {
 		// Recalculate total cost
 		totalActivityCost = getActivityCostSum($activityCheckboxes.get())
 
@@ -177,6 +177,52 @@ const onPageLoad = () => {
 			// Hide running total
 			$("#activity-total").addClass("is-hidden")
 				.text("Total: $0");
+		}
+
+		// Declare variable for the name of activity that needs toggling, if any do
+		let nameOfactivityToToggle;
+
+		// Consider the name of the toggled checkbox
+		switch (event.target.name) {
+			// Toggle express if js-frameworks was selected
+			case "js-frameworks":
+				nameOfactivityToToggle = "express";
+				break;
+
+			// Toggle node.js if js-libs was selected
+			case "js-libs":
+				nameOfactivityToToggle = "node";
+				break;
+
+			// Toggle js-frameworks is express was selected
+			case "express":
+				nameOfactivityToToggle = "js-frameworks";
+				break;
+
+			// Toggle js-libs is node was selected
+			case "node":
+				nameOfactivityToToggle = "js-libs";
+				break;
+		}
+
+		// If we are to toggle on activity
+		if (nameOfactivityToToggle !== undefined) {
+			// Get the activity to toggle (cousin of the checked/unchecked element)
+			const $activityToToggle = $(event.target)
+				.parent()
+				.siblings()
+				.children(`input[name='${nameOfactivityToToggle}']`);
+
+			// Toggle disabled status
+			if (event.target.checked) {
+				$activityToToggle
+					.prop("disabled", "disabled") // Disable checkbox
+					.parent().addClass("is-disabled");	// Set is-disabled on parent label
+			} else {
+				$activityToToggle
+					.prop("disabled", false)	// Enable checkbox
+					.parent().removeClass("is-disabled");	// Unset is-disabled on parent label
+			}
 		}
 	});
 }
