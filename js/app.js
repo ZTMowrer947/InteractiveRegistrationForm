@@ -66,8 +66,10 @@ const onPageLoad = () => {
 	// Get job role input field
 	const $jobRoleInput = $("input#other-title");
 
-	// Hide it by default
-	$jobRoleInput.addClass("is-hidden");
+	// Hide it if job role is not set to "Other"
+	if ($("select#title").val() !== "other") {
+		$jobRoleInput.addClass("is-hidden");
+	}
 
 	// Hide color select if no design selected
 	hideColorSelectIfNoDesignSelected();
