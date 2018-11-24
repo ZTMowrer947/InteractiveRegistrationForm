@@ -44,6 +44,55 @@ const getActivityCostSum = activities => {
 		0); // Initial value if there are no checked checkboxes
 }
 
+// Toggle the status of checkboxes of activities conflicting with the given activity
+const toggleConflictingActivityCheckbox = activity => {
+	// Declare variable for the name of activity that needs toggling, if any do
+	let nameOfactivityToToggle;
+
+	// Consider the name of the toggled checkbox
+	switch (activity.name) {
+		// Toggle express if js-frameworks was selected
+		case "js-frameworks":
+			nameOfactivityToToggle = "express";
+			break;
+
+		// Toggle node.js if js-libs was selected
+		case "js-libs":
+			nameOfactivityToToggle = "node";
+			break;
+
+		// Toggle js-frameworks is express was selected
+		case "express":
+			nameOfactivityToToggle = "js-frameworks";
+			break;
+
+		// Toggle js-libs is node was selected
+		case "node":
+			nameOfactivityToToggle = "js-libs";
+			break;
+	}
+
+	// If we are to toggle on activity
+	if (nameOfactivityToToggle !== undefined) {
+		// Get the activity to toggle (cousin of the checked/unchecked element)
+		const $activityToToggle = $(activity)
+			.parent()
+			.siblings()
+			.children(`input[name='${nameOfactivityToToggle}']`);
+
+		// Toggle disabled status
+		if (activity.checked) {
+			$activityToToggle
+				.prop("disabled", "disabled") // Disable checkbox
+				.parent().addClass("is-disabled");	// Set is-disabled on parent label
+		} else {
+			$activityToToggle
+				.prop("disabled", false)	// Enable checkbox
+				.parent().removeClass("is-disabled");	// Unset is-disabled on parent label
+		}
+	}
+}
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
@@ -57,6 +106,10 @@ const onPageLoad = () => {
 		.text(`Total: $${totalActivityCost}`)
 		.attr("id", "activity-total")
 		.appendTo($(".activities"));
+
+	// Set status of conflicting activities
+	$activityCheckboxes.each((index, checkbox) => 
+		toggleConflictingActivityCheckbox(checkbox))
 
 	// Hide it if all activities are unchecked
 	if (totalActivityCost === 0) {
@@ -179,51 +232,7 @@ const onPageLoad = () => {
 				.text("Total: $0");
 		}
 
-		// Declare variable for the name of activity that needs toggling, if any do
-		let nameOfactivityToToggle;
-
-		// Consider the name of the toggled checkbox
-		switch (event.target.name) {
-			// Toggle express if js-frameworks was selected
-			case "js-frameworks":
-				nameOfactivityToToggle = "express";
-				break;
-
-			// Toggle node.js if js-libs was selected
-			case "js-libs":
-				nameOfactivityToToggle = "node";
-				break;
-
-			// Toggle js-frameworks is express was selected
-			case "express":
-				nameOfactivityToToggle = "js-frameworks";
-				break;
-
-			// Toggle js-libs is node was selected
-			case "node":
-				nameOfactivityToToggle = "js-libs";
-				break;
-		}
-
-		// If we are to toggle on activity
-		if (nameOfactivityToToggle !== undefined) {
-			// Get the activity to toggle (cousin of the checked/unchecked element)
-			const $activityToToggle = $(event.target)
-				.parent()
-				.siblings()
-				.children(`input[name='${nameOfactivityToToggle}']`);
-
-			// Toggle disabled status
-			if (event.target.checked) {
-				$activityToToggle
-					.prop("disabled", "disabled") // Disable checkbox
-					.parent().addClass("is-disabled");	// Set is-disabled on parent label
-			} else {
-				$activityToToggle
-					.prop("disabled", false)	// Enable checkbox
-					.parent().removeClass("is-disabled");	// Unset is-disabled on parent label
-			}
-		}
+		toggleConflictingActivityCheckbox(event.target);
 	});
 }
 
