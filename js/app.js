@@ -93,6 +93,48 @@ const toggleConflictingActivityCheckbox = activity => {
 	}
 }
 
+// Show the proper payment information based on the payment method selected
+const showProperPaymentMethod = paymentChoice => {
+	// Replace spaces with hyphens (for credit card)
+	paymentChoice = paymentChoice.replace(" ", "-");
+
+	// Show the information for the selected payment method
+	$(`div#${paymentChoice}`)
+		.removeClass("is-hidden");
+
+	// Declare variable for payment methods to hide
+	let paymentsToHide = [];
+
+	// Consider selected payment method
+	switch (paymentChoice) {
+		// Paypal and bitcoin are hidden if credit card was selected
+		case "credit-card":
+			paymentsToHide = ["paypal", "bitcoin"];
+			break;
+
+		// Credit card and paypal if bitcoin was selected
+		case "bitcoin":
+			paymentsToHide = ["credit-card", "paypal"];
+			break;
+
+		// Credit card and bitcoin if paypal was selected
+		case "paypal":
+			paymentsToHide = ["credit-card", "bitcoin"];
+			break;
+
+		// All are hidden otherwise
+		default:
+			paymentsToHide = ["credit-card", "paypal", "bitcoin"];
+			break;
+	}
+
+	// Hide each payment method
+	paymentsToHide.forEach(paymentMethod => {
+		$(`div#${paymentMethod}`)
+			.addClass("is-hidden");
+	});
+}
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
@@ -157,6 +199,13 @@ const onPageLoad = () => {
 			break;
 	}
 
+	if ($("select#payment").val() === "select_method") {
+		$("select#payment option[value='credit card']")
+			.prop("selected", "selected");
+	}
+
+	showProperPaymentMethod($("select#payment").val());
+
 	// Set focus on username field
 	$("input#name").trigger("focus");
 
@@ -215,6 +264,10 @@ const onPageLoad = () => {
 				break;
 		}
 	});
+
+	// Show proper payment method info when one is selected
+	$("select#payment").change(event => 
+		showProperPaymentMethod(event.target.value));
 
 	// When a activity checkbox is checked/unchecked,
 	$activityCheckboxes.change(event => {
