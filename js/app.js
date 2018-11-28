@@ -186,6 +186,14 @@ const runValidatorsForField = ($field, validators) => {
 
 // Validates the form, returning whether the form was invalid
 const validateForm = () => {
+	// Validators for name field
+	const nameValidators = [
+		createValidatorFromRegex(/^.+$/, "Name field is required."),
+	];
+
+	// Run name validators
+	runValidatorsForField($("input#name"), nameValidators);
+
 	// Return whether any form field is invalid
 	return $("input, select").is(".is-invalid");
 };
