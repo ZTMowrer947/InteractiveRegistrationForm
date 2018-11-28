@@ -184,6 +184,12 @@ const runValidatorsForField = ($field, validators) => {
 		.remove();
 }
 
+// Validates the form, returning whether the form was invalid
+const validateForm = () => {
+	// Return whether any form field is invalid
+	return $("input, select").is(".is-invalid");
+};
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
@@ -336,6 +342,16 @@ const onPageLoad = () => {
 
 		toggleConflictingActivityCheckbox(event.target);
 	});
+
+	// On form submission,
+	$("form").submit(event => {
+		// Validate the form and check its validity
+		const formIsInvalid = validateForm();
+
+		// Stop submission if form is invalid
+		if (formIsInvalid)
+			event.preventDefault();
+	})
 }
 
 // Run onPageLoad function when page finishes loading
