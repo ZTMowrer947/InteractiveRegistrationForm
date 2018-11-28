@@ -155,6 +155,35 @@ const createValidatorFromRegex = (regex, errorMessage) => {
 	};
 }
 
+// Run an array of validator functions for a given field.
+const runValidatorsForField = ($field, validators) => {
+	// Try to do the following without errors
+	try {
+		// Run each validator on the field value
+		validators.forEach(validator =>
+			validator($field.val()));
+	} catch (error) { // If an error is thrown, the field is invalid 
+		// Create error span
+		const $errorSpan = $("<span></span>")
+			.text(error.message) // Set error message
+			.addClass("validation-error") // Add CSS class
+			.insertAfter($field); // Insert after invalid field
+
+		// Set classes for invalid field
+		$field.addClass("is-invalid")
+			.removeClass("is-valid");
+
+		// Stop here
+		return;
+	}
+
+	// Otherwise, set classes for valid field
+	$field.addClass("is-valid")
+		.removeClass("is-invalid")
+		.siblings(".validation-error")
+		.remove();
+}
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
