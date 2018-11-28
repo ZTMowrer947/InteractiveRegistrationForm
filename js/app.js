@@ -135,6 +135,26 @@ const showProperPaymentMethod = paymentChoice => {
 	});
 }
 
+/*
+	Creates a validator function from a regular expression, 
+	with an error message if the input provided to the validator
+	does not match the regex pattern.
+*/
+const createValidatorFromRegex = (regex, errorMessage) => {
+	// Return a validator function taking an input parameter
+	return input => {
+		// Test input against regex
+		const inputIsValid = regex.test(input);
+
+		// Throw error with given error message if input is invalid
+		if (!inputIsValid) {
+			throw new Error(errorMessage);
+		}
+
+		// Otherwise, we are good to go.
+	};
+}
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
