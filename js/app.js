@@ -171,8 +171,7 @@ const runValidatorsForField = ($field, validators) => {
 
 		// Set classes for invalid field
 		$field.addClass("is-invalid")
-			.removeClass("is-valid")
-			;
+			.removeClass("is-valid");
 
 		// Stop here
 		return;
@@ -180,13 +179,14 @@ const runValidatorsForField = ($field, validators) => {
 
 	// Otherwise, set classes for valid field
 	$field.addClass("is-valid")
-		.removeClass("is-invalid")
-		.siblings(".validation-error")
-		.remove();
+		.removeClass("is-invalid");
 }
 
 // Validates the form, returning whether the form was invalid
 const validateForm = () => {
+	// Remove all validation errors from previous runs
+	$(".validation-error").remove();
+
 	// Regex for requiring a field (at least one of any character)
 	const requiredRegex = /^.+$/;
 
