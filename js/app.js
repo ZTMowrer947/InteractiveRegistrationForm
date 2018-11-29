@@ -197,8 +197,17 @@ const validateForm = () => {
 		createValidatorFromRegex(requiredRegex, "Name field is required."),
 	];
 
+	// Validators for email field
+	const emailValidators = [
+		createValidatorFromRegex(requiredRegex, "Email field is required."),
+		createValidatorFromRegex(emailFormatRegex, "Email Address must be formatted as a valid email address."),
+	];
+
 	// Run name validators
 	runValidatorsForField($("input#name"), nameValidators);
+
+	// Run email validators
+	runValidatorsForField($("input#mail"), emailValidators);
 
 	// Return whether any form field is invalid
 	return $("input, select").is(".is-invalid");
