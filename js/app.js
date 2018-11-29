@@ -142,9 +142,9 @@ const showProperPaymentMethod = paymentChoice => {
 */
 const createValidatorFromRegex = (regex, errorMessage) => {
 	// Return a validator function taking an input parameter
-	return input => {
+	return $field => {
 		// Test input against regex
-		const inputIsValid = regex.test(input);
+		const inputIsValid = regex.test($field.val());
 
 		// Throw error with given error message if input is invalid
 		if (!inputIsValid) {
@@ -161,7 +161,7 @@ const runValidatorsForField = ($field, validators) => {
 	try {
 		// Run each validator on the field value
 		validators.forEach(validator =>
-			validator($field.val()));
+			validator($field));
 	} catch (error) { // If an error is thrown, the field is invalid 
 		// Create error span
 		const $errorSpan = $("<span></span>")
