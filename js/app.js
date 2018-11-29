@@ -167,11 +167,12 @@ const runValidatorsForField = ($field, validators) => {
 		const $errorSpan = $("<span></span>")
 			.text(error.message) // Set error message
 			.addClass("validation-error") // Add CSS class
-			.insertAfter($field); // Insert after invalid field
+			.insertBefore($field); // Insert before invalid field
 
 		// Set classes for invalid field
 		$field.addClass("is-invalid")
-			.removeClass("is-valid");
+			.removeClass("is-valid")
+			;
 
 		// Stop here
 		return;
