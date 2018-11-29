@@ -157,6 +157,18 @@ p#no-design-sel {
 	color: #777;
 }
 
+.is-valid {
+	border: 1px solid green;
+}
+
+.is-invalid {
+	border: 1px solid red;
+}
+
+.validation-error {
+	color: red;
+}
+
 /* ================================= 
   Media Queries
 ==================================== */
