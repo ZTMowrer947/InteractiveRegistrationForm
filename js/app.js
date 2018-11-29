@@ -186,9 +186,15 @@ const runValidatorsForField = ($field, validators) => {
 
 // Validates the form, returning whether the form was invalid
 const validateForm = () => {
+	// Regex for requiring a field (at least one of any character)
+	const requiredRegex = /^.+$/;
+
+	// Regex for email address format
+	const emailFormatRegex = /^[\w-+]+@[\w-]+(?:\.[\w]+)+/;
+
 	// Validators for name field
 	const nameValidators = [
-		createValidatorFromRegex(/^.+$/, "Name field is required."),
+		createValidatorFromRegex(requiredRegex, "Name field is required."),
 	];
 
 	// Run name validators
