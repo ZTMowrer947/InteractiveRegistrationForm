@@ -165,9 +165,12 @@ const runValidatorsForField = ($field, validators) => {
 	} catch (error) { // If an error is thrown, the field is invalid 
 		// Create error span
 		const $errorSpan = $("<span></span>")
-			.text(error.message) // Set error message
+			.text(` ${error.message}`) // Set error message
 			.addClass("validation-error") // Add CSS class
-			.insertBefore($field); // Insert before invalid field
+			
+		// Append error to label for field
+		$(`label[for="${$field.attr("id")}"]`) // Label for field
+			.append($errorSpan);
 
 		// Set classes for invalid field
 		$field.addClass("is-invalid")
