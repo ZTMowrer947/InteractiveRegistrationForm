@@ -237,16 +237,28 @@ const validateForm = () => {
 		},
 	];
 
+	// Validators for payment section in general
+	const paymentValidators = [
+		// Another custom validator, ensures a valid payment method is selected
+		$paymentSelect => {
+			if ($paymentSelect.val() === "select_method")
+				throw new Error("Please select a payment option.");
+		}
+	];
+
+	// Card number validators
 	const creditCardNumberValidators = [
 		createValidatorFromRegex(requiredRegex, "Field is required."),
 		createValidatorFromRegex(/^\d{13,16}$/, "Card Number must consist of 13 to 16 digits."),	
 	];
 
+	// Zip code validators
 	const zipCodeValidators = [
 		createValidatorFromRegex(requiredRegex, "Field is required."),
 		createValidatorFromRegex(/^\d{5}$/, "Zip Code must consist of exactly 5 digits."),
 	];
 
+	// CVV validators
 	const cvvValidators = [
 		createValidatorFromRegex(requiredRegex, "Field is required."),
 		createValidatorFromRegex(/^\d{3}$/, "CVV must consist of exactly 3 digits."),
@@ -260,6 +272,9 @@ const validateForm = () => {
 
 	// Run activity validators
 	runValidatorsForField($(".activities input"), activityValidators, $(".activities legend"));
+
+	// Run payment validators
+	runValidatorsForField($("select#payment"), paymentValidators);
 
 	// If credit card payment option is selected, run credit card validators
 	if ($("select#payment").val() === "credit card") {
