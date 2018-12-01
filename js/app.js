@@ -3,6 +3,100 @@
 	Unit 3 Project: Interactive Form
 /////////////////////////////////////////////*/
 
+/*/////////////////////////
+	Regexes and Validation
+/////////////////////////*/
+// Regex for requiring a field (at least one of any character)
+const requiredRegex = /^.+$/;
+
+// Regex for email address format
+const emailFormatRegex = /^[\w-+]+@[\w-]+(?:\.[\w]+)+/;
+
+/*
+	Gets the validators of the application.
+	It is a function because we need to ensure the
+	jQuery objects used within are up to date.
+*/
+const getValidatorObjects = () => [
+	{
+		// Field to validate
+		field: $("input#name"),
+
+		// Validators for that field
+		validators: [
+			createValidatorFromRegex(requiredRegex, "Name field is required."),
+		],
+	},
+	{
+		field: $("input#mail"),
+		validators: [
+			createValidatorFromRegex(requiredRegex, "Email field is required."),
+			createValidatorFromRegex(emailFormatRegex, "Email Address must be formatted as a valid email address."),
+		],
+	},
+	{
+		// Element used to insert element into DOM
+		errorDisplay: $(".activities legend"),
+		field: $(".activities input"),
+		validators: [
+			// Custom validator
+			$activityCheckboxes => {
+				let atLeastOneActivityIsChecked;
+
+				$activityCheckboxes.each((index, activity) => {
+					if (activity.checked) {
+						atLeastOneActivityIsChecked = true;
+						return false;
+					}
+				});
+
+				// Ensure at least one activity must be selected
+				if (!atLeastOneActivityIsChecked) {
+					throw new Error("At least one activity must be selected.");
+				}
+			},
+		],
+	},
+	{
+		field: $("select#payment"),
+		validators: [
+			// Another custom validator, ensures a valid payment method is selected
+			$paymentSelect => {
+				if ($paymentSelect.val() === "select_method")
+					throw new Error("Please select a payment option.");
+			},
+		],
+	},
+	{
+		field: $("input#cc-num"),
+		validators: [
+			createValidatorFromRegex(requiredRegex, "Field is required."),
+			createValidatorFromRegex(/^\d{13,16}$/, "Card Number must consist of 13 to 16 digits."),	
+		],
+		// Run validator only if this condition is met
+		runIf: $("select#payment").val() === "credit card",
+	},
+	{
+		field: $("input#zip"),
+		validators: [
+			createValidatorFromRegex(requiredRegex, "Field is required."),
+			createValidatorFromRegex(/^\d{5}$/, "Zip Code must consist of exactly 5 digits."),
+		],
+		runIf: $("select#payment").val() === "credit card",
+	},
+	{
+		field: $("input#cvv"),
+		validators: [
+			createValidatorFromRegex(requiredRegex, "Field is required."),
+			createValidatorFromRegex(/^\d{3}$/, "CVV must consist of exactly 3 digits."),
+		],
+		runIf: $("select#payment").val() === "credit card",
+	},
+];
+
+/*////////////
+	Functions
+////////////*/
 // Hide color select if no design has been selected
 const hideColorSelectIfNoDesignSelected = () => {
 	// If no design has been selected,
@@ -200,88 +294,29 @@ const validateForm = () => {
 	// Remove all validation errors from previous runs
 	$(".validation-error").remove();
 
-	// Regex for requiring a field (at least one of any character)
-	const requiredRegex = /^.+$/;
+	// Get the validator objects
+	const validatorObjects = getValidatorObjects();
 
-	// Regex for email address format
-	const emailFormatRegex = /^[\w-+]+@[\w-]+(?:\.[\w]+)+/;
-
-	// Validators for name field
-	const nameValidators = [
-		createValidatorFromRegex(requiredRegex, "Name field is required."),
-	];
-
-	// Validators for email field
-	const emailValidators = [
-		createValidatorFromRegex(requiredRegex, "Email field is required."),
-		createValidatorFromRegex(emailFormatRegex, "Email Address must be formatted as a valid email address."),
-	];
-
-	// Validators for activity field
-	const activityValidators = [
-		// Custom validator
-		$activityCheckboxes => {
-			let atLeastOneActivityIsChecked;
-
-			$activityCheckboxes.each((index, activity) => {
-				if (activity.checked) {
-					atLeastOneActivityIsChecked = true;
-					return false;
-				}
-			});
-
-			// Ensure at least one activity must be selected
-			if (!atLeastOneActivityIsChecked) {
-				throw new Error("At least one activity must be selected.");
+	// Iterate over each validator object
+	validatorObjects.forEach(validatorObj => {
+		// If there is no runIf condition, or if there is and it is met,
+		if (validatorObj.runIf === undefined || validatorObj.runIf) {
+			// Then if there is an error display element,
+			if (validatorObj.errorDisplay !== undefined) {
+				// Run the validator with it
+				runValidatorsForField(
+					validatorObj.field,
+					validatorObj.validators,
+					validatorObj.errorDisplay
+				);
+			} else {
+				// Otherwise, run without it
+				runValidatorsForField(
+					validatorObj.field, validatorObj.validators);
 			}
-		},
-	];
-
-	// Validators for payment section in general
-	const paymentValidators = [
-		// Another custom validator, ensures a valid payment method is selected
-		$paymentSelect => {
-			if ($paymentSelect.val() === "select_method")
-				throw new Error("Please select a payment option.");
 		}
-	];
-
-	// Card number validators
-	const creditCardNumberValidators = [
-		createValidatorFromRegex(requiredRegex, "Field is required."),
-		createValidatorFromRegex(/^\d{13,16}$/, "Card Number must consist of 13 to 16 digits."),	
-	];
-
-	// Zip code validators
-	const zipCodeValidators = [
-		createValidatorFromRegex(requiredRegex, "Field is required."),
-		createValidatorFromRegex(/^\d{5}$/, "Zip Code must consist of exactly 5 digits."),
-	];
-
-	// CVV validators
-	const cvvValidators = [
-		createValidatorFromRegex(requiredRegex, "Field is required."),
-		createValidatorFromRegex(/^\d{3}$/, "CVV must consist of exactly 3 digits."),
-	];
-
-	// Run name validators
-	runValidatorsForField($("input#name"), nameValidators);
-
-	// Run email validators
-	runValidatorsForField($("input#mail"), emailValidators);
-
-	// Run activity validators
-	runValidatorsForField($(".activities input"), activityValidators, $(".activities legend"));
-
-	// Run payment validators
-	runValidatorsForField($("select#payment"), paymentValidators);
-
-	// If credit card payment option is selected, run credit card validators
-	if ($("select#payment").val() === "credit card") {
-		runValidatorsForField($("input#cc-num"), creditCardNumberValidators);
-		runValidatorsForField($("input#zip"), zipCodeValidators);
-		runValidatorsForField($("input#cvv"), cvvValidators);
-	}
+		// Otherwise, don't run the validator
+	});
 
 	// Return whether any form field is invalid
 	return $("input, select").is(".is-invalid");
