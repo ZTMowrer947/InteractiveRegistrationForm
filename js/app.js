@@ -237,6 +237,21 @@ const validateForm = () => {
 		},
 	];
 
+	const creditCardNumberValidators = [
+		createValidatorFromRegex(requiredRegex, "Field is required."),
+		createValidatorFromRegex(/^\d{13,16}$/, "Card Number must consist of 13 to 16 digits."),	
+	];
+
+	const zipCodeValidators = [
+		createValidatorFromRegex(requiredRegex, "Field is required."),
+		createValidatorFromRegex(/^\d{5}$/, "Zip Code must consist of exactly 5 digits."),
+	];
+
+	const cvvValidators = [
+		createValidatorFromRegex(requiredRegex, "Field is required."),
+		createValidatorFromRegex(/^\d{3}$/, "CVV must consist of exactly 3 digits."),
+	];
+
 	// Run name validators
 	runValidatorsForField($("input#name"), nameValidators);
 
@@ -245,6 +260,13 @@ const validateForm = () => {
 
 	// Run activity validators
 	runValidatorsForField($(".activities input"), activityValidators, $(".activities legend"));
+
+	// If credit card payment option is selected, run credit card validators
+	if ($("select#payment").val() === "credit card") {
+		runValidatorsForField($("input#cc-num"), creditCardNumberValidators);
+		runValidatorsForField($("input#zip"), zipCodeValidators);
+		runValidatorsForField($("input#cvv"), cvvValidators);
+	}
 
 	// Return whether any form field is invalid
 	return $("input, select").is(".is-invalid");
