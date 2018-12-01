@@ -155,8 +155,12 @@ const createValidatorFromRegex = (regex, errorMessage) => {
 	};
 }
 
-// Run an array of validator functions for a given field.
-const runValidatorsForField = ($field, validators) => {
+/* 
+	Run an array of validator functions for a given field.
+	Validation errors are appended to the given error display element (if specified)
+	or the label for the field (default).
+*/
+const runValidatorsForField = ($field, validators, $errorDisplay = undefined) => {
 	// Try to do the following without errors
 	try {
 		// Run each validator on the field value
@@ -168,9 +172,15 @@ const runValidatorsForField = ($field, validators) => {
 			.text(` ${error.message}`) // Set error message
 			.addClass("validation-error") // Add CSS class
 			
-		// Append error to label for field
-		$(`label[for="${$field.attr("id")}"]`) // Label for field
-			.append($errorSpan);
+		// Append error to error display element if it is defined
+		if ($errorDisplay !== undefined) {
+			// If undefined, append to error display
+			$errorDisplay
+				.append($errorSpan);
+		} else { // Otherwise, fall back to label for input
+			$(`label[for="${$field.attr("id")}"]`) // Label for field
+				.append($errorSpan);
+		}
 
 		// Set classes for invalid field
 		$field.addClass("is-invalid")
@@ -207,11 +217,34 @@ const validateForm = () => {
 		createValidatorFromRegex(emailFormatRegex, "Email Address must be formatted as a valid email address."),
 	];
 
+	// Validators for activity field
+	const activityValidators = [
+		// Custom validator
+		$activityCheckboxes => {
+			let atLeastOneActivityIsChecked;
+
+			$activityCheckboxes.each((index, activity) => {
+				if (activity.checked) {
+					atLeastOneActivityIsChecked = true;
+					return false;
+				}
+			});
+
+			// Ensure at least one activity must be selected
+			if (!atLeastOneActivityIsChecked) {
+				throw new Error("At least one activity must be selected.");
+			}
+		},
+	];
+
 	// Run name validators
 	runValidatorsForField($("input#name"), nameValidators);
 
 	// Run email validators
 	runValidatorsForField($("input#mail"), emailValidators);
+
+	// Run activity validators
+	runValidatorsForField($(".activities input"), activityValidators, $(".activities legend"));
 
 	// Return whether any form field is invalid
 	return $("input, select").is(".is-invalid");
