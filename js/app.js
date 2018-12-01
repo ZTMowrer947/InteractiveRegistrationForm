@@ -168,18 +168,18 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 			validator($field));
 	} catch (error) { // If an error is thrown, the field is invalid 
 		// Create error span
-		const $errorSpan = $("<span></span>")
+		const $errorSpan = $("<p></p>")
 			.text(` ${error.message}`) // Set error message
 			.addClass("validation-error") // Add CSS class
 			
 		// Append error to error display element if it is defined
 		if ($errorDisplay !== undefined) {
 			// If undefined, append to error display
-			$errorDisplay
-				.append($errorSpan);
-		} else { // Otherwise, fall back to label for input
-			$(`label[for="${$field.attr("id")}"]`) // Label for field
-				.append($errorSpan);
+			$errorSpan
+				.insertAfter($errorDisplay);
+		} else { // Otherwise, fall back to field
+			$errorSpan
+				.insertAfter($field)
 		}
 
 		// Set classes for invalid field
