@@ -167,6 +167,8 @@ p#no-design-sel {
 
 .validation-error {
 	color: red;
+	font-weight: normal;
+	font-size: 1rem;
 }
 
 /* ================================= 
