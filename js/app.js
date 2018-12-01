@@ -252,6 +252,10 @@ const validateForm = () => {
 
 // Function to run when page finishes loading
 const onPageLoad = () => {
+	// Disable HTML5 Validation
+	$("form").attr("novalidate", true);
+
+
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
 
 	// Set initial total event cost to sum of checked checkboxes
