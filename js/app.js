@@ -175,15 +175,14 @@ const toggleConflictingActivityCheckbox = activity => {
 			.children(`input[name='${nameOfactivityToToggle}']`);
 
 		// Toggle disabled status
-		if (activity.checked) {
+		if (activity.checked)
 			$activityToToggle
 				.prop("disabled", "disabled") // Disable checkbox
 				.parent().addClass("is-disabled");	// Set is-disabled on parent label
-		} else {
+		else
 			$activityToToggle
 				.prop("disabled", false)	// Enable checkbox
 				.parent().removeClass("is-disabled");	// Unset is-disabled on parent label
-		}
 	}
 }
 
@@ -229,6 +228,7 @@ const showProperPaymentMethod = paymentChoice => {
 	});
 }
 
+// Show the colors corresponding to the selected design
 const showProperDesignColors = () => {
 	// Hide color select if no design selected
 	hideColorSelectIfNoDesignSelected();
@@ -282,9 +282,8 @@ const createValidatorFromRegex = (regex, errorMessage) => {
 		const inputIsValid = regex.test($field.val());
 
 		// Throw error with given error message if input is invalid
-		if (!inputIsValid) {
+		if (!inputIsValid)
 			throw new Error(errorMessage);
-		}
 
 		// Otherwise, we are good to go.
 	};
@@ -518,7 +517,7 @@ const onPageLoad = () => {
 	})
 
 	// Validate all other fields when changed
-	$("input:not([type='checkbox']").on("keyup", event => validateField(event.target, getValidatorObjects()));
+	$("input:not([type='checkbox']").on("keyup change", event => validateField(event.target, getValidatorObjects()));
 	$("select").on("change", event => validateField(event.target, getValidatorObjects()));
 }
 
