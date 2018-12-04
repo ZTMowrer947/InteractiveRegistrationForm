@@ -36,7 +36,7 @@ const getValidatorObjects = () => [
 	},
 	{
 		// Selector for element used to insert element into DOM
-		errorDisplay: ".activities legend",
+		errorDisplay: $(".activities legend"),
 		field: ".activities input[type='checkbox']",
 		validators: [
 			// Custom validator
@@ -335,6 +335,23 @@ const validateForm = () => {
 	return $("input, select").is(".is-invalid");
 };
 
+// Validate a field using its selector
+const validateField = (field, validatorObjects) => {
+	// If there is a validation error from previous run, remove it
+	if ($(field).next().is(".validation-error"))
+		$(field).next().remove();
+
+	// Get the selector for finding the proper validators
+	const selector = `${field.tagName.toLowerCase()}#${field.id}`;
+
+	// Find the proper validators
+	const validatorObj = validatorObjects.find(val => val.field === selector);
+
+	// If there are validators for this field, and its running conditions don't exist or are met, run them
+	if (validatorObj !== undefined && (validatorObj.runIf === undefined || validatorObj.runIf))
+		runValidatorsForField($(selector), validatorObj.validators, validatorObj.errorDisplay);
+};
+
 // Function to run when page finishes loading
 const onPageLoad = () => {
 	// Disable HTML5 Validation
@@ -475,6 +492,15 @@ const onPageLoad = () => {
 
 	// When a activity checkbox is checked/unchecked,
 	$activityCheckboxes.change(event => {
+		// Define selector for finding proper validators
+		const selector = ".activities input[type='checkbox']";
+
+		// Find proper validators
+		const validatorObj = getValidatorObjects().find(val => val.field === selector);
+
+		// Run them
+		runValidatorsForField($activityCheckboxes, validatorObj.validators, validatorObj.errorDisplay);
+
 		// Recalculate total cost
 		totalActivityCost = getActivityCostSum($activityCheckboxes.get())
 
@@ -501,6 +527,9 @@ const onPageLoad = () => {
 		if (formIsInvalid)
 			event.preventDefault();
 	})
+
+	$("input:not([type='checkbox']").keyup(event => validateField(event.target, getValidatorObjects()));
+	$("select").change(event => validateField(event.target, getValidatorObjects()));
 }
 
 // Run onPageLoad function when page finishes loading
