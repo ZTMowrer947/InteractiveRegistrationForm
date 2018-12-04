@@ -312,14 +312,13 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 			.addClass("validation-error") // Add CSS class
 			
 		// Append error to error display element if it is defined
-		if ($errorDisplay !== undefined) {
+		if ($errorDisplay !== undefined)
 			// If undefined, append to error display
 			$errorSpan
 				.insertAfter($errorDisplay);
-		} else { // Otherwise, fall back to field
+		else // Otherwise, fall back to field
 			$errorSpan
 				.insertBefore($field)
-		}
 
 		// Set classes for invalid field and label
 		$field.addClass("is-invalid")
@@ -333,17 +332,16 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 	}
 
 	// Otherwise, remove the validation error if present
-	if ($errorDisplay !== undefined) {
+	if ($errorDisplay !== undefined)
 		// Remove it after the error display if it is present
 		if ($errorDisplay.next().is(".validation-error"))
 			$errorDisplay
 				.next().remove();
-	} else {
+	else
 		// Otherwise, remove it before the field
 		if ($field.prev().is(".validation-error"))
 			$field
 				.prev().remove();
-	}
 
 	// Otherwise, set classes for valid field and label
 	$field.addClass("is-valid")
@@ -364,21 +362,12 @@ const validateForm = () => {
 	// Iterate over each validator object
 	validatorObjects.forEach(validatorObj => {
 		// If there is no runIf condition, or if there is and it is met,
-		if (validatorObj.runIf === undefined || validatorObj.runIf) {
-			// Then if there is an error display element,
-			if (validatorObj.errorDisplay !== undefined) {
-				// Run the validator with it
-				runValidatorsForField(
-					$(validatorObj.field),
-					validatorObj.validators,
-					validatorObj.errorDisplay
-				);
-			} else {
-				// Otherwise, run without it
-				runValidatorsForField(
-					$(validatorObj.field), validatorObj.validators);
-			}
-		}
+		if (validatorObj.runIf === undefined || validatorObj.runIf)
+			runValidatorsForField(
+				$(validatorObj.field),
+				validatorObj.validators,
+				validatorObj.errorDisplay
+			);
 		// Otherwise, don't run the validator
 	});
 
@@ -426,22 +415,20 @@ const onPageLoad = () => {
 		toggleConflictingActivityCheckbox(checkbox))
 
 	// Hide it if all activities are unchecked
-	if (totalActivityCost === 0) {
+	if (totalActivityCost === 0)
 		$activityTotal.addClass("is-hidden");
-	}
 
 	// Get job role input field
 	const $jobRoleInput = $("input#other-title");
 
 	// Hide it if job role is not set to "Other"
-	if ($("select#title").val() !== "other") {
+	if ($("select#title").val() !== "other")
 		$jobRoleInput.addClass("is-hidden");
-	}
 
-	if ($("select#payment").val() === "select_method") {
+	// Select credit card by default
+	if ($("select#payment").val() === "select_method")
 		$("select#payment option[value='credit card']")
 			.prop("selected", "selected");
-	}
 
 	showProperPaymentMethod($("select#payment").val());
 
@@ -453,13 +440,12 @@ const onPageLoad = () => {
 	// Add change event listener for job title select
 	$("select#title").on("change", event => {
 		// If the new value is other,
-		if (event.target.value === "other") {
+		if (event.target.value === "other")
 			// Show the job role field
 			$jobRoleInput.removeClass("is-hidden");
-		} else { // Otherwise,
+		else  // Otherwise,
 			// Hide it
 			$jobRoleInput.addClass("is-hidden");
-		}
 	});
 
 	// When a t-shirt theme is selected,
@@ -509,15 +495,14 @@ const onPageLoad = () => {
 		totalActivityCost = getActivityCostSum($activityCheckboxes.get())
 
 		// If total cost is greater than 0 (at least one checkbox is checked)
-		if (totalActivityCost > 0) {
+		if (totalActivityCost > 0)
 			// Show running total with total cost
 			$("#activity-total").removeClass("is-hidden")
 				.text(`Total: $${totalActivityCost}`);
-		} else {
+		else 
 			// Hide running total
 			$("#activity-total").addClass("is-hidden")
 				.text("Total: $0");
-		}
 
 		toggleConflictingActivityCheckbox(event.target);
 	});
