@@ -139,6 +139,10 @@ p#no-design-sel {
 	margin-top: 0.625rem;
 }
 
+label[for='exp-month'] {
+	padding-top: 8.875rem; /* To make room for validation errors */
+}
+
 /* ================================= 
   Helper Classes
 ==================================== */
@@ -158,11 +162,11 @@ p#no-design-sel {
 }
 
 .is-valid {
-	border: 1px solid green;
+	border: 5px solid green;
 }
 
 .is-invalid {
-	border: 1px solid red;
+	border: 5px solid red;
 }
 
 .validation-error {
