@@ -451,6 +451,9 @@ const onPageLoad = () => {
 	$("select#design").on("change", event => {
 		showProperDesignColors();
 
+		// Get colors
+		const $colorSelect = $("select#color");
+
 		// Consider design choice, selecting the first option from either design
 		switch (event.target.value) {
 			// If JS Puns design  was selected,
