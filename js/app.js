@@ -284,6 +284,19 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 		return;
 	}
 
+	// Otherwise, remove the validation error if present
+	if ($errorDisplay !== undefined) {
+		// Remove it after the error display if it is present
+		if ($errorDisplay.next().is(".validation-error"))
+			$errorDisplay
+				.next().remove();
+	} else {
+		// Otherwise, remove it after the field
+		if ($field.next().is(".validation-error"))
+			$field
+				.next().remove();
+	}
+
 	// Otherwise, set classes for valid field
 	$field.addClass("is-valid")
 		.removeClass("is-invalid");
