@@ -229,6 +229,47 @@ const showProperPaymentMethod = paymentChoice => {
 	});
 }
 
+const showProperDesignColors = () => {
+	// Hide color select if no design selected
+	hideColorSelectIfNoDesignSelected();
+
+	// Get color choices
+	const $colorSelect = $("select#color");
+
+	// Get design
+	const design = $("select#design").val();
+
+	// Consider design choice
+	switch (design) {
+		// If JS Puns design  was selected,
+		case "js puns":
+			// Get I <3 JS colors
+			$colorSelect.children(":not(:contains('Puns'))")
+				// Hide them
+				.addClass("is-hidden")
+				// Get JS Puns colors
+				.siblings(":contains('Puns')")
+				// Show them
+				.removeClass("is-hidden");
+			break;
+
+		// If I <3 JS design was selected
+		case "heart js":
+			// Get JS Puns colors
+			$colorSelect.children(":contains('Puns')")
+				// Hide them
+				.addClass("is-hidden")
+				// Get I <3 JS colors
+				.siblings(":not(:contains('Puns'))")
+				// Show them
+				.removeClass("is-hidden");
+			break;
+	}
+
+	// Return design
+	return design;
+};
+
 /*
 	Creates a validator function from a regular expression, 
 	with an error message if the input provided to the validator
@@ -397,45 +438,14 @@ const onPageLoad = () => {
 		$jobRoleInput.addClass("is-hidden");
 	}
 
-	// Hide color select if no design selected
-	hideColorSelectIfNoDesignSelected();
-
-	// Get color choices
-	const $colorSelect = $("select#color");
-
-	// Consider design choice
-	switch ($("select#design").val()) {
-		// If JS Puns design  was selected,
-		case "js puns":
-			// Get I <3 JS colors
-			$colorSelect.children(":not(:contains('Puns'))")
-				// Hide them
-				.addClass("is-hidden")
-				// Get JS Puns colors
-				.siblings(":contains('Puns')")
-				// Show them
-				.removeClass("is-hidden");
-			break;
-
-		// If I <3 JS design was selected
-		case "heart js":
-			// Get JS Puns colors
-			$colorSelect.children(":contains('Puns')")
-				// Hide them
-				.addClass("is-hidden")
-				// Get I <3 JS colors
-				.siblings(":not(:contains('Puns'))")
-				// Show them
-				.removeClass("is-hidden");
-			break;
-	}
-
 	if ($("select#payment").val() === "select_method") {
 		$("select#payment option[value='credit card']")
 			.prop("selected", "selected");
 	}
 
 	showProperPaymentMethod($("select#payment").val());
+
+	showProperDesignColors();
 
 	// Set focus on username field
 	$("input#name").trigger("focus");
@@ -454,40 +464,24 @@ const onPageLoad = () => {
 
 	// When a t-shirt theme is selected,
 	$("select#design").change(event => {
-		// Hide color choices if no t-shirt theme has been selected
-		hideColorSelectIfNoDesignSelected();
+		showProperDesignColors();
 
-		// Get color choices
-		const $colorSelect = $("select#color");
-
-		// Consider design choice
+		// Consider design choice, selecting the first option from either design
 		switch (event.target.value) {
 			// If JS Puns design  was selected,
 			case "js puns":
-				// Get I <3 JS colors
-				$colorSelect.children(":not(:contains('Puns'))")
-					// Hide them
-					.addClass("is-hidden")
-					// Get JS Puns colors
-					.siblings(":contains('Puns')")
-					// Show them
-					.removeClass("is-hidden")
+				// Get JS Puns colors
+				$colorSelect.children(":contains('Puns')")
 					// Get the first JS Puns color
 					.first()
 					// Select it
 					.prop("selected", "selected");
 				break;
 
-			// If I <3 JS design was selected
+			// If I <3 JS design was selected,
 			case "heart js":
-				// Get JS Puns colors
-				$colorSelect.children(":contains('Puns')")
-					// Hide them
-					.addClass("is-hidden")
-					// Get I <3 JS colors
-					.siblings(":not(:contains('Puns'))")
-					// Show them
-					.removeClass("is-hidden")
+				// Get I <3 JS colors
+				$colorSelect.children(":not(:contains('Puns'))")
 					// Get the first I <3 JS color
 					.first()
 					// Select it
