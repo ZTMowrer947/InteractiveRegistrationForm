@@ -19,8 +19,8 @@ const emailFormatRegex = /^[\w-+]+@[\w-]+(?:\.[\w]+)+/;
 */
 const getValidatorObjects = () => [
 	{
-		// Field to validate
-		field: $("input#name"),
+		// Selector of field to validate
+		field: "input#name",
 
 		// Validators for that field
 		validators: [
@@ -28,16 +28,16 @@ const getValidatorObjects = () => [
 		],
 	},
 	{
-		field: $("input#mail"),
+		field: "input#mail",
 		validators: [
 			createValidatorFromRegex(requiredRegex, "Email field is required."),
 			createValidatorFromRegex(emailFormatRegex, "Email Address must be formatted as a valid email address."),
 		],
 	},
 	{
-		// Element used to insert element into DOM
-		errorDisplay: $(".activities legend"),
-		field: $(".activities input"),
+		// Selector for element used to insert element into DOM
+		errorDisplay: ".activities legend",
+		field: ".activities input[type='checkbox']",
 		validators: [
 			// Custom validator
 			$activityCheckboxes => {
@@ -58,7 +58,7 @@ const getValidatorObjects = () => [
 		],
 	},
 	{
-		field: $("select#payment"),
+		field: "select#payment",
 		validators: [
 			// Another custom validator, ensures a valid payment method is selected
 			$paymentSelect => {
@@ -68,7 +68,7 @@ const getValidatorObjects = () => [
 		],
 	},
 	{
-		field: $("input#cc-num"),
+		field: "input#cc-num",
 		validators: [
 			createValidatorFromRegex(requiredRegex, "Field is required."),
 			createValidatorFromRegex(/^\d{13,16}$/, "Card Number must consist of 13 to 16 digits."),	
@@ -77,7 +77,7 @@ const getValidatorObjects = () => [
 		runIf: $("select#payment").val() === "credit card",
 	},
 	{
-		field: $("input#zip"),
+		field: "input#zip",
 		validators: [
 			createValidatorFromRegex(requiredRegex, "Field is required."),
 			createValidatorFromRegex(/^\d{5}$/, "Zip Code must consist of exactly 5 digits."),
@@ -85,7 +85,7 @@ const getValidatorObjects = () => [
 		runIf: $("select#payment").val() === "credit card",
 	},
 	{
-		field: $("input#cvv"),
+		field: "input#cvv",
 		validators: [
 			createValidatorFromRegex(requiredRegex, "Field is required."),
 			createValidatorFromRegex(/^\d{3}$/, "CVV must consist of exactly 3 digits."),
@@ -305,14 +305,14 @@ const validateForm = () => {
 			if (validatorObj.errorDisplay !== undefined) {
 				// Run the validator with it
 				runValidatorsForField(
-					validatorObj.field,
+					$(validatorObj.field),
 					validatorObj.validators,
 					validatorObj.errorDisplay
 				);
 			} else {
 				// Otherwise, run without it
 				runValidatorsForField(
-					validatorObj.field, validatorObj.validators);
+					$(validatorObj.field), validatorObj.validators);
 			}
 		}
 		// Otherwise, don't run the validator
@@ -327,7 +327,7 @@ const onPageLoad = () => {
 	// Disable HTML5 Validation
 	$("form").attr("novalidate", true);
 
-
+	// Activity checkbox inputs
 	const $activityCheckboxes = $(".activities input[type='checkbox']");
 
 	// Set initial total event cost to sum of checked checkboxes
