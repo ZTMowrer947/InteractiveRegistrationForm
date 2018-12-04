@@ -255,6 +255,10 @@ const createValidatorFromRegex = (regex, errorMessage) => {
 	or the label for the field (default).
 */
 const runValidatorsForField = ($field, validators, $errorDisplay = undefined) => {
+	const $fieldLabel = $field.parent().is("label") ?
+		$field.parent() : 
+		$(`label[for="${$field.attr("id")}"]`);
+
 	// Try to do the following without errors
 	try {
 		// Run each validator on the field value
@@ -276,8 +280,11 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 				.insertAfter($field)
 		}
 
-		// Set classes for invalid field
+		// Set classes for invalid field and label
 		$field.addClass("is-invalid")
+			.removeClass("is-valid");
+
+		$fieldLabel.addClass("is-invalid")
 			.removeClass("is-valid");
 
 		// Stop here
@@ -297,8 +304,11 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 				.next().remove();
 	}
 
-	// Otherwise, set classes for valid field
+	// Otherwise, set classes for valid field and label
 	$field.addClass("is-valid")
+		.removeClass("is-invalid");
+
+	$fieldLabel.addClass("is-valid")
 		.removeClass("is-invalid");
 }
 
