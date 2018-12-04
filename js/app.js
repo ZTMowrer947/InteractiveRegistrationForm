@@ -266,7 +266,7 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 			validator($field));
 	} catch (error) { // If an error is thrown, the field is invalid 
 		// Create error span
-		const $errorSpan = $("<p></p>")
+		const $errorSpan = $("<span></span>")
 			.text(` ${error.message}`) // Set error message
 			.addClass("validation-error") // Add CSS class
 			
@@ -277,7 +277,7 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 				.insertAfter($errorDisplay);
 		} else { // Otherwise, fall back to field
 			$errorSpan
-				.insertAfter($field)
+				.insertBefore($field)
 		}
 
 		// Set classes for invalid field and label
@@ -298,10 +298,10 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 			$errorDisplay
 				.next().remove();
 	} else {
-		// Otherwise, remove it after the field
-		if ($field.next().is(".validation-error"))
+		// Otherwise, remove it before the field
+		if ($field.prev().is(".validation-error"))
 			$field
-				.next().remove();
+				.prev().remove();
 	}
 
 	// Otherwise, set classes for valid field and label
@@ -348,8 +348,8 @@ const validateForm = () => {
 // Validate a field using its selector
 const validateField = (field, validatorObjects) => {
 	// If there is a validation error from previous run, remove it
-	if ($(field).next().is(".validation-error"))
-		$(field).next().remove();
+	if ($(field).prev().is(".validation-error"))
+		$(field).prev().remove();
 
 	// Get the selector for finding the proper validators
 	const selector = `${field.tagName.toLowerCase()}#${field.id}`;
