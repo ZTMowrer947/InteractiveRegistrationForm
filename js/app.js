@@ -451,7 +451,7 @@ const onPageLoad = () => {
 	$("input#name").trigger("focus");
 
 	// Add change event listener for job title select
-	$("select#title").change(event => {
+	$("select#title").on("change", event => {
 		// If the new value is other,
 		if (event.target.value === "other") {
 			// Show the job role field
@@ -463,7 +463,7 @@ const onPageLoad = () => {
 	});
 
 	// When a t-shirt theme is selected,
-	$("select#design").change(event => {
+	$("select#design").on("change", event => {
 		showProperDesignColors();
 
 		// Consider design choice, selecting the first option from either design
@@ -491,11 +491,11 @@ const onPageLoad = () => {
 	});
 
 	// Show proper payment method info when one is selected
-	$("select#payment").change(event => 
+	$("select#payment").on("change", event => 
 		showProperPaymentMethod(event.target.value));
 
 	// When a activity checkbox is checked/unchecked,
-	$activityCheckboxes.change(event => {
+	$activityCheckboxes.on("change", event => {
 		// Define selector for finding proper validators
 		const selector = ".activities input[type='checkbox']";
 
@@ -523,7 +523,7 @@ const onPageLoad = () => {
 	});
 
 	// On form submission,
-	$("form").submit(event => {
+	$("form").on("submit", event => {
 		// Validate the form and check its validity
 		const formIsInvalid = validateForm();
 
@@ -532,8 +532,9 @@ const onPageLoad = () => {
 			event.preventDefault();
 	})
 
-	$("input:not([type='checkbox']").keyup(event => validateField(event.target, getValidatorObjects()));
-	$("select").change(event => validateField(event.target, getValidatorObjects()));
+	// Validate all other fields when changed
+	$("input:not([type='checkbox']").on("keyup", event => validateField(event.target, getValidatorObjects()));
+	$("select").on("change", event => validateField(event.target, getValidatorObjects()));
 }
 
 // Run onPageLoad function when page finishes loading
