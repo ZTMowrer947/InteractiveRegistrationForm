@@ -162,11 +162,21 @@ label[for='exp-month'] {
 }
 
 .is-valid {
-	border: 5px solid green;
+	border: 1px solid green;
+}
+
+label.is-valid {
+	border: 0;
+	color: green;
 }
 
 .is-invalid {
-	border: 5px solid red;
+	border: 1px solid red;
+}
+
+label.is-invalid {
+	border: 0;
+	color: red;
 }
 
 .validation-error {
