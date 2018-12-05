@@ -92,6 +92,14 @@ const getValidatorObjects = () => [
 		],
 		runIf: $("select#payment").val() === "credit card",
 	},
+	{
+		field: "input#other-title",
+		validators: [
+			createValidatorFromRegex(requiredRegex, "Field is required."),
+		],
+		runIf: !$("input#other-title").hasClass("is-hidden"),
+		errorDisplay: $("label[for='title']"),
+	}
 ];
 
 /*////////////
@@ -314,7 +322,7 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 		if ($errorDisplay !== undefined)
 			// If undefined, append to error display
 			$errorSpan
-				.insertAfter($errorDisplay);
+				.appendTo($errorDisplay);
 		else // Otherwise, fall back to field
 			$errorSpan
 				.insertBefore($field)
@@ -333,9 +341,10 @@ const runValidatorsForField = ($field, validators, $errorDisplay = undefined) =>
 	// Otherwise, remove the validation error if present
 	if ($errorDisplay !== undefined)
 		// Remove it after the error display if it is present
-		if ($errorDisplay.next().is(".validation-error"))
+		if ($errorDisplay.children().last().is(".validation-error"))
 			$errorDisplay
-				.next().remove();
+				.children()
+				.last().remove();
 	else
 		// Otherwise, remove it before the field
 		if ($field.prev().is(".validation-error"))
