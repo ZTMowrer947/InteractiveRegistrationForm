@@ -44,6 +44,10 @@ const runValidatorsForField = (
         ? $field.parent()
         : $(`label[for="${$field.attr("id")}"]`);
 
+    // Remove validation errors from field (and error display if present)
+    if ($errorDisplay) $errorDisplay.children(".validation-error").remove();
+    $field.children(".validation-error").remove();
+
     // Try to do the following without errors
     try {
         // Run each validator on the field value
@@ -56,41 +60,39 @@ const runValidatorsForField = (
             .addClass("validation-error"); // Add CSS class
 
         // Append error to error display element if it is defined
-        if ($errorDisplay !== undefined)
-            // If undefined, append to error display
+        if ($errorDisplay !== undefined) {
+            // If defined, append to error display
             $errorSpan.appendTo($errorDisplay);
-        // Otherwise, fall back to field
-        else $errorSpan.insertBefore($field);
 
-        // Set classes for invalid field and label
-        $field.addClass("is-invalid").removeClass("is-valid");
+            // Set invalid class on error display
+            $errorDisplay.addClass("is-invalid").removeClass("");
+        }
+        // Otherwise,
+        else {
+            // Insert error before field
+            $errorSpan.insertBefore($field);
 
-        $fieldLabel.addClass("is-invalid").removeClass("is-valid");
+            // and set classes for invalid field and label
+            $field.addClass("is-invalid").removeClass("is-valid");
+
+            $fieldLabel.addClass("is-invalid").removeClass("is-valid");
+        }
 
         // Stop here
         return;
     }
 
-    // Otherwise, remove the validation error if present
-    if ($errorDisplay !== undefined)
-        if (
-            $errorDisplay
-                .children()
-                .last()
-                .is(".validation-error")
-        )
-            // Remove it after the error display if it is present
-            $errorDisplay
-                .children()
-                .last()
-                .remove();
-        // Otherwise, remove it before the field
-        else if ($field.prev().is(".validation-error")) $field.prev().remove();
-
+    // Otherwise, check if error display is present
+    if ($errorDisplay !== undefined) {
+        // If it is, set classes for validity on that
+        $errorDisplay.addClass("is-valid").removeClass("is-invalid");
+    }
     // Otherwise, set classes for valid field and label
-    $field.addClass("is-valid").removeClass("is-invalid");
+    else {
+        $field.addClass("is-valid").removeClass("is-invalid");
 
-    $fieldLabel.addClass("is-valid").removeClass("is-invalid");
+        $fieldLabel.addClass("is-valid").removeClass("is-invalid");
+    }
 };
 
 /*
@@ -479,6 +481,12 @@ const onPageLoad = () => {
 
     // Add change event listener for job title select
     $("select#title").on("change", event => {
+        // Clear validity class and validation errors from field
+        $("label[for='title']").removeClass("is-invalid");
+        $("label[for='title']")
+            .children(".validation-error")
+            .remove();
+
         // If the new value is other,
         if (event.target.value === "other")
             // Show the job role field
